@@ -1,19 +1,20 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import { api } from "@/Environment/Env";
 import Sidebar from "@/app/components/admin/sidebar/sidebar";
 import Header from "@/app/components/header/header";
 
-const EditBlog = () => {
+// 🔥 params.id comes from the dynamic folder name [id]
+const EditBlog = ({ params }) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const postId = searchParams.get("id"); // Get blog post ID from URL
+  const postId = params.id;
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
-  const [newImage, setNewImage] = useState(null); // For newly uploaded image
+  const [newImage, setNewImage] = useState(null);
   const [loading, setLoading] = useState(false);
 
   // Fetch the existing blog post data
@@ -49,10 +50,9 @@ const EditBlog = () => {
     const file = e.target.files[0];
     if (file) {
       setNewImage(file);
-      setImage(URL.createObjectURL(file)); // Preview Image
+      setImage(URL.createObjectURL(file)); 
     }
   };
-
   // Handle Update Blog Post API Call
   const handleUpdate = async () => {
     if (!title || !content) {
@@ -66,7 +66,7 @@ const EditBlog = () => {
       formData.append("title", title);
       formData.append("content", content);
       if (newImage) {
-        formData.append("image", newImage); // Append new image if changed
+        formData.append("image", newImage); 
       }
 
       await axios.put(`${api}/api/blog/updatePosts/${postId}`, formData, {
@@ -74,7 +74,7 @@ const EditBlog = () => {
       });
 
       alert("Blog updated successfully!");
-      router.push("/admin/blog"); // Redirect to blog list
+      router.push("/admin/blog"); 
     } catch (error) {
       console.error("Error updating blog post:", error.response?.data || error);
       alert("Failed to update blog post!");
